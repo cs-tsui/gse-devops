@@ -1,0 +1,49 @@
+apiVersion: tekton.dev/v1beta1
+kind: PipelineRun
+metadata:
+  creationTimestamp: null
+  generateName: simple-pipeline-run-
+  namespace: cp4i-dev
+spec:
+  serviceAccountName: pipeline
+  params:
+  - name: DOCKERFILE
+    value: ./Dockerfile
+  - name: artifactoryRepo
+    value: ace-bar-dev
+  - name: extraArgs
+    value: ""
+  - name: gitRepo
+    value: devops-demo-sample-ace-project
+  - name: gitRevision
+    value: master
+  - name: gitUrl
+    value: https://github.com/cs-tsui/devops-demo-sample-ace-project
+  - name: imageTag
+    value: latest
+  - name: imageUrl
+    value: 169.62.82.19:32265/my-docker-reg/sample-ace-project
+  - name: pathToContext
+    value: workspace
+  - name: pathToYamlFile
+    value: k8s
+  - name: project
+    value: sampleaceproject
+  pipelineRef:
+    name: simple-pipeline
+  workspaces:
+    # - emptyDir: {}
+    #   name: git-source
+
+    # - name: git-source
+    #   volumeClaimTemplate:
+    #     spec:
+    #       accessModes:
+    #       - ReadWriteOnce
+    #       resources:
+    #         requests:
+    #           storage: 1Gi
+
+    - name: git-source
+      persistentVolumeClaim:
+        claimName: workspace-pvc
