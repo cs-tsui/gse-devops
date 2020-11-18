@@ -147,9 +147,6 @@ spec:
           workspace: git-source
       runAfter:
         - slack-post-deploy
-      workspaces:
-        - name: output
-          workspace: git-source
       params:
         - name: imageUrl
           value: $(params.imageUrl)
