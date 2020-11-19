@@ -1,0 +1,124 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: sample-ace-github-eventlistener
+spec:
+  serviceAccountName: pipeline
+  triggers:
+    - name: triggers-cp4i
+      # interceptors:
+      #   - cel:
+      #       filter: >-
+      #         (header.match('X-GitHub-Event', 'pull_request') &&
+      #          body.action == 'closed' &&
+      #          body.pull_request.merged == true &&
+      #          body.pull_request.head.repo.name  == 'devops-demo-sample-ace-project')
+      bindings:
+        - name: sample-ace-triggerbinding
+      template:
+        name: sample-ace-trigger-template
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: sample-ace-triggerbinding
+spec:
+  params:
+  - name: gitUrl
+    value: $(body.repository.clone_url)
+  - name: gitRevision
+    value: $(body.pull_request.head.sha)
+  - name: imageContext
+    value: cp4i-gse-poc
+  - name: gitRepo
+    value: $(body.repository.name)
+  - name: serviceAccountName
+    value: pipeline
+  - name: imageTag
+    value: $(body.pull_request.head.sha)
+---
+
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerTemplate
+metadata:
+  name: sample-ace-trigger-template
+spec:
+  params:
+    - name: gitUrl
+      description: The git repository URL for the msad-integration build and deploy
+      default: https://github.com/cs-tsui/devops-demo-sample-ace-project
+    - name: gitRevision
+      description: The git revision to build
+      default: master
+    - name: gitRepo
+      description: Name of the git repository
+    - name: serviceAccountName
+      description: The service account name to use to run the pipeline
+      default: my-pipeline-sa
+    - name: imageContext
+      description: The image context root in the image registry where the image is stored
+      default: cp4i-gse-poc
+    - name: imageTag
+      description: The image tag
+      default: latest
+  resourcetemplates:
+
+    # Docker Pull/Push Secret
+    - apiVersion: v1
+      kind: Secret
+      metadata:
+        name: private-registry-secret
+      type: kubernetes.io/dockerconfigjson
+      data:
+        .dockerconfigjson: $(params.dockerconfigjson)
+
+    - apiVersion: v1
+      kind: ServiceAccount
+      metadata:
+        name: my-pipeline-sa
+      imagePullSecrets:
+      - name: private-registry-secret
+
+    - apiVersion: v1
+      kind: PersistentVolumeClaim
+      metadata:
+        name: ace-pipelinerun-$(uid)-pvc
+      spec:
+        resources:
+          requests:
+            storage:  5Gi
+        volumeMode: Filesystem
+        accessModes:
+          - ReadWriteOnce
+
+    - apiVersion: tekton.dev/v1beta1
+      kind: PipelineRun
+      metadata:
+        name: pipelinerun-$(uid)
+      spec:
+        serviceAccountName: $(params.serviceAccountName)
+        pipelineRef:
+          name: simple-pipeline
+        params:
+          - name: gitUrl
+            value: $(params.gitUrl)
+          - name: gitRevision
+            value: $(params.gitRevision)
+          - name: imageUrl
+            # value: "us.icr.io/$(params.imageContext)/sample-ace-project"
+            value: 169.62.82.19:32265/my-docker-reg/sample-toolchain-ace
+          - name: imageTag
+            value: $(params.imageTag)
+          - name: gitRepo
+            value: $(params.gitRepo)
+          - name: pathToYamlFile
+            value: "k8s"
+          - name: pathToContext
+            value: "workspace"
+          - name: extraArgs
+            value: --skip-tls-verify
+        timeout: "1h0m0s"
+        workspaces:
+          - name: git-source
+            persistentVolumeClaim:
+              claimName: ace-pipelinerun-$(uid)-pvc
