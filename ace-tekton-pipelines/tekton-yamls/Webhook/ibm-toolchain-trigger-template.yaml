@@ -25,17 +25,17 @@ metadata:
 spec:
   params:
   - name: gitUrl
-    value: $(body.repository.clone_url)
+    value: $(event.repository.clone_url)
   - name: gitRevision
-    value: $(body.pull_request.head.sha)
+    value: $(event.pull_request.head.sha)
   - name: imageContext
     value: cp4i-gse-poc
   - name: gitRepo
-    value: $(body.repository.name)
+    value: $(event.repository.name)
   - name: serviceAccountName
     value: my-pipeline-sa
   - name: imageTag
-    value: $(body.pull_request.head.sha)
+    value: $(event.pull_request.head.sha)
 ---
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate
