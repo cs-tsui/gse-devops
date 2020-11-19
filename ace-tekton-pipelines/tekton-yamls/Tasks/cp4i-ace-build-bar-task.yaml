@@ -38,12 +38,22 @@ spec:
   - name: imageUrl
     type: string
   steps:
-  - name: run-docker-commands
-    image: docker
-    # workingDir: /artifacts
+
+  - name: fetch-bar-file
+    image: docker pull curlimages/curl
     envFrom:
       - secretRef:
           name: artifactory-credentials
+    command: ["/bin/sh", "-c"]
+    args:
+      - |
+        set -eu;
+        curl -u $(ARTIFACTORY_USER):$(ARTIFACTORY_PASSWORD) -O "$(ARTIFACTORY_URL)/artifactory/$(params.artifactoryRepo)/$(params.project)-$(params.imageTag).bar"
+
+
+  - name: run-docker-commands
+    image: docker
+    # workingDir: /artifacts
     env:
       - name: DOCKER_HOST
         value: "tcp://localhost:2376"
@@ -60,10 +70,8 @@ spec:
     args:
       - |
         set -eu;
-        curl -u $(ARTIFACTORY_USER):$(ARTIFACTORY_PASSWORD) -O "$(ARTIFACTORY_URL)/artifactory/$(params.artifactoryRepo)/$(params.project)-$(params.imageTag).bar"
-
+        
         env
-
         pwd
         ls -la
         echo $(workspaces.output.path)
