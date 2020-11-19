@@ -4,8 +4,8 @@ metadata:
   name: build-bar
 spec:
   workspaces:
-    - name: output
-      description: The git repo will be cloned onto the volume backing this workspace
+    - name: build-dir
+      description: image build dir
   params:
     - default: quay.io/buildah/stable:v1.11.0
       description: The location of the buildah builder image.
@@ -14,7 +14,7 @@ spec:
     - description: Specify the name of the project being built.
       name: project
       type: string
-    - default: .
+    - default: $(workspaces.build-dir.path) # .
       description: Path to the directory to use as context.
       name: CONTEXT
       type: string
@@ -52,12 +52,14 @@ spec:
         pwd
         ls -la        
         echo "workspace path"
-
-        echo $(workspaces.output.path)
+        echo $(workspaces.build-dir.path)
+        cd $(workspaces.build-dir.path)
+        pwd
+        
         curl -u $(ARTIFACTORY_USER):$(ARTIFACTORY_PASSWORD) -O "$(ARTIFACTORY_URL)/artifactory/$(params.artifactoryRepo)/$(params.project)-$(params.imageTag).bar"
-    securityContext:
-      privileged: true
-      runAsUser: 0
+    # securityContext:
+    #   privileged: true
+    #   runAsUser: 0
 
   - name: run-docker-commands
     image: docker
@@ -82,7 +84,9 @@ spec:
         env
         pwd
         ls -la
-        echo $(workspaces.output.path)
+        echo $(workspaces.build-dir.path)
+        cd $(workspaces.build-dir.path)
+        pwd
         
         printf "Building image\n"
         # buildah bud --build-arg PROJECT1=$(params.project) --tls-verify=$(params.TLSVERIFY) --layers -f $(params.DOCKERFILE) -t $(params.imageUrl):$(params.imageTag) $(params.CONTEXT)
