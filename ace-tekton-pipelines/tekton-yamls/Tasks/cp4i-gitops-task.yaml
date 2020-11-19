@@ -43,7 +43,7 @@ spec:
           echo "Cloning the gitops repository"
 
           # clone repo
-          git clone https://github.com/ibm-cloud-architecture/devops-demo-cp4i-env.git
+          git clone https://github.com/cs-tsui/devops-demo-cp4i-env.git
           cd devops-demo-cp4i-env
 
           echo $(params.imageUrl):$(params.imageTag)
@@ -62,5 +62,5 @@ spec:
           git add .
           git commit -m "Tekton CI commit"
           # git remote rm origin
-          # git remote add origin https://${GIT_USER_ACCOUNT}:${GITHUB_API_TOKEN}@github.com:ibm-cloud-architecture/devops-demo-cp4i-env.git > /dev/null 2>&1
+          # git remote add origin https://${GIT_USER_ACCOUNT}:${GITHUB_API_TOKEN}@github.com:cs-tsui/devops-demo-cp4i-env.git > /dev/null 2>&1
           git push origin master
