@@ -7,36 +7,36 @@ spec:
     - name: output
       description: The git repo will be cloned onto the volume backing this workspace
   params:
-  - default: quay.io/buildah/stable:v1.11.0
-    description: The location of the buildah builder image.
-    name: BUILDER_IMAGE
-    type: string
-  - description: Specify the name of the project being built.
-    name: project
-    type: string
-  - default: .
-    description: Path to the directory to use as context.
-    name: CONTEXT
-    type: string
-  - default: "false"
-    description: Verify the TLS on the registry endpoint (for push/pull to a non-TLS
-      registry)
-    name: TLSVERIFY
-    type: string
-  - default: ./Dockerfile
-    description: Path to the Dockerfile to build.
-    name: DOCKERFILE
-    type: string
-  - name: pathToContext
-    type: string
-    description: The path to the build context within the workspace
-    default: workspace
-  - name: artifactoryRepo
-    type: string
-  - name: imageTag
-    type: string
-  - name: imageUrl
-    type: string
+    - default: quay.io/buildah/stable:v1.11.0
+      description: The location of the buildah builder image.
+      name: BUILDER_IMAGE
+      type: string
+    - description: Specify the name of the project being built.
+      name: project
+      type: string
+    - default: .
+      description: Path to the directory to use as context.
+      name: CONTEXT
+      type: string
+    - default: "false"
+      description: Verify the TLS on the registry endpoint (for push/pull to a non-TLS
+        registry)
+      name: TLSVERIFY
+      type: string
+    - default: ./Dockerfile
+      description: Path to the Dockerfile to build.
+      name: DOCKERFILE
+      type: string
+    - name: pathToContext
+      type: string
+      description: The path to the build context within the workspace
+      default: workspace
+    - name: artifactoryRepo
+      type: string
+    - name: imageTag
+      type: string
+    - name: imageUrl
+      type: string
   steps:
 
   - name: fetch-bar-file
@@ -48,8 +48,16 @@ spec:
     args:
       - |
         set -eu;
-        curl -u $(ARTIFACTORY_USER):$(ARTIFACTORY_PASSWORD) -O "$(ARTIFACTORY_URL)/artifactory/$(params.artifactoryRepo)/$(params.project)-$(params.imageTag).bar"
+        env
+        pwd
+        ls -la
+        
+        echo "workspace path"
 
+        echo $(workspaces.output.path)
+        curl -u $(ARTIFACTORY_USER):$(ARTIFACTORY_PASSWORD) -O "$(ARTIFACTORY_URL)/artifactory/$(params.artifactoryRepo)/$(params.project)-$(params.imageTag).bar"
+    securityContext:
+      privileged: true
 
   - name: run-docker-commands
     image: docker
