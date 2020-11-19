@@ -81,7 +81,7 @@ spec:
       taskRef:
         name: build-bar
       workspaces:
-        - name: output
+        - name: build-dir
           workspace: git-source
       params:
       - name: project
