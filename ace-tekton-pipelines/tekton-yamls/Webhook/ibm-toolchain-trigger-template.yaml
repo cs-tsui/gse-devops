@@ -25,7 +25,7 @@ metadata:
 spec:
   params:
   - name: gitUrl
-    value: $(body.repository.clone_url)
+    value: https://github.com/cs-tsui/devops-demo-sample-ace-project
   - name: gitRevision
     value: $(body.pull_request.head.sha)
   - name: imageContext
