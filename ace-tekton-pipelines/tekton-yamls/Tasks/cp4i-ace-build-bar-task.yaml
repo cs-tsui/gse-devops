@@ -57,9 +57,9 @@ spec:
         pwd
         
         curl -u $(ARTIFACTORY_USER):$(ARTIFACTORY_PASSWORD) -O "$(ARTIFACTORY_URL)/artifactory/$(params.artifactoryRepo)/$(params.project)-$(params.imageTag).bar"
-    # securityContext:
-    #   privileged: true
-    #   runAsUser: 0
+    securityContext:
+      privileged: true
+      runAsUser: 0
 
   - name: run-docker-commands
     image: docker
