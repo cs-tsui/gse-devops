@@ -3,7 +3,7 @@ kind: EventListener
 metadata:
   name: sample-ace-github-eventlistener
 spec:
-  serviceAccountName: pipeline
+  # serviceAccountName: pipeline
   triggers:
     - name: triggers-cp4i
       # interceptors:
@@ -33,7 +33,7 @@ spec:
   - name: gitRepo
     value: $(body.repository.name)
   - name: serviceAccountName
-    value: pipeline
+    value: my-pipeline-sa
   - name: imageTag
     value: $(body.pull_request.head.sha)
 ---
@@ -52,12 +52,13 @@ spec:
       default: master
     - name: gitRepo
       description: Name of the git repository
+      default: devops-demo-sample-ace-project
     - name: serviceAccountName
       description: The service account name to use to run the pipeline
       default: my-pipeline-sa
     - name: imageContext
       description: The image context root in the image registry where the image is stored
-      default: cp4i-gse-poc
+      default: dev-cst
     - name: imageTag
       description: The image tag
       default: latest
