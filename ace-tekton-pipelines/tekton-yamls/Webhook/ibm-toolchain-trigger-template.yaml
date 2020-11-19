@@ -87,6 +87,8 @@ spec:
       kind: ServiceAccount
       metadata:
         name: my-pipeline-sa
+      secrets:
+      - name: private-registry-secret
       imagePullSecrets:
       - name: private-registry-secret
 
@@ -107,7 +109,10 @@ spec:
       metadata:
         name: pipelinerun-$(uid)
       spec:
-        serviceAccountName: $(params.serviceAccountName)
+        serviceAccountNames:
+          - taskName: build-task
+            serviceAccountName: $(params.serviceAccountName)
+        # serviceAccountName: $(params.serviceAccountName)
         pipelineRef:
           name: simple-pipeline
         params:
