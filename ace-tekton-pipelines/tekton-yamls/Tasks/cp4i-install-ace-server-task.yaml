@@ -25,6 +25,8 @@ spec:
       echo $(params.imageUrl):$(params.imageTag)
       ls -la $(workspaces.output.path)/$(params.pathToYamlFile)/
       sed -i -e 's;__IMAGE__;$(params.imageUrl):$(params.imageTag);g' $(workspaces.output.path)/$(params.pathToYamlFile)/integrationserver.yaml
+
+      cat $(workspaces.output.path)/$(params.pathToYamlFile)/integrationserver.yaml
     command:
     - /bin/bash
     image: node:12-stretch
