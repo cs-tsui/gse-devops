@@ -38,59 +38,116 @@ spec:
   - name: imageUrl
     type: string
   steps:
-  - args:
-    - -c
-    - |
-      set -eu;
-      #source ./env-config
-      curl -u $(ARTIFACTORY_USER):$(ARTIFACTORY_PASSWORD) -O "$(ARTIFACTORY_URL)/artifactory/$(params.artifactoryRepo)/$(params.project)-$(params.imageTag).bar"
-
-      pwd
-      ls -la
-      echo $(workspaces.output.path)
-
-      #mv $(params.project)-$(params.imageTag).bar $(workspaces.output.path)/workspace/$(params.project)/gen/$(params.project)-$(params.imageTag).bar
-
-      #ls -la output
-      #ls -la output/workspace
-      #ls -la $(workspaces.output.path)/workspace/$(params.project)/gen/
-      #cd output
-      #ls -la
-
-      printf "Building image\n"
-      buildah bud --build-arg PROJECT1=$(params.project) --tls-verify=$(params.TLSVERIFY) --layers -f $(params.DOCKERFILE) -t $(params.imageUrl):$(params.imageTag) $(params.CONTEXT)
-    command:
-    - /bin/bash
+  - name: run-docker-commands
+    image: docker
+    # workingDir: /artifacts
     envFrom:
-    - secretRef:
-        name: artifactory-credentials
-    image: $(params.BUILDER_IMAGE)
-    name: build-image
-    securityContext:
-      privileged: true
-      runAsUser: 0
-    volumeMounts:
-    - mountPath: /var/lib/containers
-      name: varlibcontainers
-  - args:
-    - '-c'
-    - >
-      set -e
+      - secretRef:
+          name: artifactory-credentials
+    env:
+      - name: DOCKER_TLS_VERIFY
+        value: "0"
+    command: ["/bin/sh", "-c"]
+    args:
+      - |
+        set -eu;
+        curl -u $(ARTIFACTORY_USER):$(ARTIFACTORY_PASSWORD) -O "$(ARTIFACTORY_URL)/artifactory/$(params.artifactoryRepo)/$(params.project)-$(params.imageTag).bar"
 
-      buildah push --tls-verify=$(params.TLSVERIFY)
-      "$(params.imageUrl):$(params.imageTag)"
-      "docker://$(params.imageUrl):$(params.imageTag)"
 
-    command:
-    - /bin/bash
-    image: $(params.BUILDER_IMAGE)
-    name: push-image
-    securityContext:
-      privileged: true
-      runAsUser: 0
+        pwd
+        ls -la
+        echo $(workspaces.output.path)
+        
+        printf "Building image\n"
+        buildah bud --build-arg PROJECT1=$(params.project) --tls-verify=$(params.TLSVERIFY) --layers -f $(params.DOCKERFILE) -t $(params.imageUrl):$(params.imageTag) $(params.CONTEXT)
+
+        docker build --tag "$(params.imageUrl):$(params.imageTag)" --file $(params.DOCKERFILE) $(params.CONTEXT)
+        docker inspect ${IMAGE_URL}:${IMAGE_TAG}
+        docker push ${IMAGE_URL}:${IMAGE_TAG}
+
+        echo "Done."
     volumeMounts:
-    - mountPath: /var/lib/containers
-      name: varlibcontainers
+      - mountPath: /steps
+        name: steps-volume
+      - mountPath: /certs/client
+        name: dind-certs
+  sidecars:
+      - image: docker:dind
+        name: server
+        securityContext:
+          privileged: true
+        env:
+          # Write generated certs to the path shared with the client.
+          - name: DOCKER_TLS_CERTDIR
+            value: /certs
+        volumeMounts:
+          - mountPath: /certs/client
+            name: dind-certs
+        # Wait for the dind daemon to generate the certs it will share with the client.
+        readinessProbe:
+          periodSeconds: 1
+          exec:
+            command: ["ls", "/certs/client/ca.pem"]
   volumes:
-  - emptyDir: {}
-    name: varlibcontainers
+    - name: steps-volume
+      emptyDir: {}
+    - name: dind-certs
+      emptyDir: {}
+
+  # Buildah
+  # - args:
+  #   - -c
+  #   - |
+  #     set -eu;
+  #     #source ./env-config
+  #     curl -u $(ARTIFACTORY_USER):$(ARTIFACTORY_PASSWORD) -O "$(ARTIFACTORY_URL)/artifactory/$(params.artifactoryRepo)/$(params.project)-$(params.imageTag).bar"
+
+  #     pwd
+  #     ls -la
+  #     echo $(workspaces.output.path)
+
+  #     #mv $(params.project)-$(params.imageTag).bar $(workspaces.output.path)/workspace/$(params.project)/gen/$(params.project)-$(params.imageTag).bar
+
+  #     #ls -la output
+  #     #ls -la output/workspace
+  #     #ls -la $(workspaces.output.path)/workspace/$(params.project)/gen/
+  #     #cd output
+  #     #ls -la
+
+  #     printf "Building image\n"
+  #     buildah bud --build-arg PROJECT1=$(params.project) --tls-verify=$(params.TLSVERIFY) --layers -f $(params.DOCKERFILE) -t $(params.imageUrl):$(params.imageTag) $(params.CONTEXT)
+  #   command:
+  #   - /bin/bash
+  #   envFrom:
+  #   - secretRef:
+  #       name: artifactory-credentials
+  #   image: $(params.BUILDER_IMAGE)
+  #   name: build-image
+  #   securityContext:
+  #     privileged: true
+  #     runAsUser: 0
+  #   volumeMounts:
+  #   - mountPath: /var/lib/containers
+  #     name: varlibcontainers
+  # - args:
+  #   - '-c'
+  #   - >
+  #     set -e
+
+  #     buildah push --tls-verify=$(params.TLSVERIFY)
+  #     "$(params.imageUrl):$(params.imageTag)"
+  #     "docker://$(params.imageUrl):$(params.imageTag)"
+
+  #   command:
+  #   - /bin/bash
+  #   image: $(params.BUILDER_IMAGE)
+  #   name: push-image
+  #   securityContext:
+  #     privileged: true
+  #     runAsUser: 0
+  #   volumeMounts:
+  #   - mountPath: /var/lib/containers
+  #     name: varlibcontainers
+  # volumes:
+  # - emptyDir: {}
+  #   name: varlibcontainers
