@@ -25,7 +25,7 @@ metadata:
 spec:
   params:
   - name: gitUrl
-    value: https://github.com/cs-tsui/devops-demo-sample-ace-project
+    value: $(body.repository.clone_url)
   - name: gitRevision
     value: $(body.pull_request.head.sha)
   - name: imageContext
@@ -37,7 +37,6 @@ spec:
   - name: imageTag
     value: $(body.pull_request.head.sha)
 ---
-
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate
 metadata:
@@ -63,6 +62,17 @@ spec:
       description: The image tag
       default: latest
   resourcetemplates:
+
+    - kind: Secret
+      apiVersion: v1
+      metadata:
+        name: artifactory-credentials
+      data:
+        ARTIFACTORY_PASSWORD: $(params.artifactory_password)
+        ARTIFACTORY_URL: >-
+          aHR0cHM6Ly9hcnRpZmFjdG9yeS10b29scy5jc3Qtcm9rcy1zbS02Y2NkN2YzNzhhZTgxOTU1M2QzN2Q1ZjJlZTE0MmJkNi0wMDAwLnNqYzA0LmNvbnRhaW5lcnMuYXBwZG9tYWluLmNsb3Vk
+        ARTIFACTORY_USER: YWNlLXVzZXI=
+      type: Opaque
 
     # Docker Pull/Push Secret
     - apiVersion: v1
