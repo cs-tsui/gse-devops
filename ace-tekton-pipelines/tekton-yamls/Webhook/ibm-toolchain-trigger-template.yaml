@@ -29,13 +29,14 @@ spec:
   - name: gitRevision
     value: $(event.pull_request.head.sha)
   - name: imageContext
-    value: cp4i-gse-poc
+    value: dev-cst
   - name: gitRepo
     value: $(event.repository.name)
   - name: serviceAccountName
     value: my-pipeline-sa
   - name: imageTag
-    value: $(event.pull_request.head.sha)
+    # value: $(event.pull_request.head.sha)
+    value: latest
 ---
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate

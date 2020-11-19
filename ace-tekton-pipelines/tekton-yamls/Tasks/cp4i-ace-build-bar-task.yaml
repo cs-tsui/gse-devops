@@ -50,8 +50,7 @@ spec:
         set -eu;
         env
         pwd
-        ls -la
-        
+        ls -la        
         echo "workspace path"
 
         echo $(workspaces.output.path)
@@ -90,8 +89,8 @@ spec:
 
         printf "Building image with docker\n"
         docker build --tag "$(params.imageUrl):$(params.imageTag)" --file $(params.DOCKERFILE) $(params.CONTEXT)
-        docker inspect ${IMAGE_URL}:${IMAGE_TAG}
-        docker push ${IMAGE_URL}:${IMAGE_TAG}
+        docker inspect $(params.imageUrl):$(params.imageTag)
+        docker push $(params.imageUrl):$(params.imageTag)
 
         echo "Done."
     volumeMounts:
