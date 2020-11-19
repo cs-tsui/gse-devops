@@ -57,9 +57,6 @@ spec:
       #cd output
       #ls -la
 
-      ls -lah ~/.docker
-      cat ~/.docker/config.json | wc
-
       printf "Building image\n"
       buildah bud --build-arg PROJECT1=$(params.project) --tls-verify=$(params.TLSVERIFY) --layers -f $(params.DOCKERFILE) -t $(params.imageUrl):$(params.imageTag) $(params.CONTEXT)
     command:
