@@ -40,7 +40,7 @@ spec:
   steps:
 
   - name: fetch-bar-file
-    image: docker pull curlimages/curl
+    image: curlimages/curl
     envFrom:
       - secretRef:
           name: artifactory-credentials
@@ -70,7 +70,7 @@ spec:
     args:
       - |
         set -eu;
-        
+
         env
         pwd
         ls -la
