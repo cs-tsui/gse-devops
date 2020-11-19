@@ -6,6 +6,8 @@ spec:
   workspaces:
     - name: build-dir
       description: image build dir
+    - name: output
+      description: git repo location
   params:
     - default: quay.io/buildah/stable:v1.11.0
       description: The location of the buildah builder image.

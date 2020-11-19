@@ -83,6 +83,8 @@ spec:
       workspaces:
         - name: build-dir
           workspace: git-source
+        - name: output
+          workspace: git-source
       params:
       - name: project
         value: $(params.project)
