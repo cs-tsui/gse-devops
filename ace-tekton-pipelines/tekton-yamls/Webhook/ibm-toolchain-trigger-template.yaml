@@ -118,6 +118,8 @@ spec:
             value: "workspace"
           - name: extraArgs
             value: --skip-tls-verify
+          - name: project
+            value: sampleaceproject
         timeout: "1h0m0s"
         workspaces:
           - name: git-source

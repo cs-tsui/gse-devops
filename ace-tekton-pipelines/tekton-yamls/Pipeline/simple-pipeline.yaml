@@ -15,7 +15,7 @@ spec:
     default: "generic-local"
   - name: gitUrl
     description: Git repository url
-    default:
+    default: https://github.com/cs-tsui/devops-demo-sample-ace-project
   - name: gitRevision
     description: Git revision to check out
     default: master

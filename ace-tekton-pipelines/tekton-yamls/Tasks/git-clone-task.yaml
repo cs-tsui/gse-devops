@@ -43,6 +43,19 @@ spec:
   steps:
     - name: clone
       image: gcr.io/tekton-releases/github.com/tektoncd/pipeline/cmd/git-init:v0.12.0
+      env:
+        - name: url
+          value: $(params.url)
+        - name: revision
+          value: $(params.revision)
+        - name: sslVerify
+          value: $(params.sslVerify)
+        - name: refspec
+          value: $(params.refspec)
+        - name: submodules
+          value: $(params.submodules)
+        - name: depth
+          value: $(params.depth)
       script: |
         CHECKOUT_DIR="$(workspaces.output.path)/$(params.subdirectory)"
 
@@ -66,15 +79,17 @@ spec:
           cleandir
         fi
 
+        env
+
         echo "Executing git-init..."
         /ko-app/git-init \
-          -url "$(params.url)" \
-          -revision "$(params.revision)" \
-          -refspec "$(params.refspec)" \
+          -url "$url" \
+          -revision "$revision" \
+          -refspec "$refspec" \
           -path "$CHECKOUT_DIR" \
-          -sslVerify="$(params.sslVerify)" \
-          -submodules="$(params.submodules)" \
-          -depth "$(params.depth)"
+          -sslVerify="$sslVerify" \
+          -submodules="$submodules" \
+          -depth "$depth"
 
         echo "git-init completed."
 
