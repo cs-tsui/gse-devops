@@ -56,11 +56,9 @@ spec:
         echo "workspace path"
         echo $(workspaces.build-dir.path)
         cd $(workspaces.build-dir.path)
-        pwd
+        # pwd
 
         find / -name 'config.json'
-        ls -lah /tekton/home/.docker
-
         find / -name 'daemon.json'
         
         curl -u $(ARTIFACTORY_USER):$(ARTIFACTORY_PASSWORD) -O "$(ARTIFACTORY_URL)/artifactory/$(params.artifactoryRepo)/$(params.project)-$(params.imageTag).bar"
