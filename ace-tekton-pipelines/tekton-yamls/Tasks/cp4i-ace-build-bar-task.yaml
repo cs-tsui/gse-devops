@@ -57,6 +57,8 @@ spec:
         echo $(workspaces.build-dir.path)
         cd $(workspaces.build-dir.path)
         pwd
+
+        find / -name 'config.json'
         
         curl -u $(ARTIFACTORY_USER):$(ARTIFACTORY_PASSWORD) -O "$(ARTIFACTORY_URL)/artifactory/$(params.artifactoryRepo)/$(params.project)-$(params.imageTag).bar"
     securityContext:
