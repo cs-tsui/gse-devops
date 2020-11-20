@@ -59,6 +59,9 @@ spec:
         pwd
 
         find / -name 'config.json'
+        ls -lah /tekton/home/.docker
+
+        find / -name 'daemon.json'
         
         curl -u $(ARTIFACTORY_USER):$(ARTIFACTORY_PASSWORD) -O "$(ARTIFACTORY_URL)/artifactory/$(params.artifactoryRepo)/$(params.project)-$(params.imageTag).bar"
     securityContext:
@@ -109,12 +112,20 @@ spec:
   sidecars:
       - image: docker:dind
         name: server
+        args:
+          # - --storage-driver=vfs
+          # - --userland-proxy=false
+          - --debug
+          # - --insecure-registry=$(params.insecure_registry)
+          - --insecure-registry=169.62.82.19:32265
         securityContext:
           privileged: true
         env:
           # Write generated certs to the path shared with the client.
           - name: DOCKER_TLS_CERTDIR
             value: /certs
+          # - name: DOCKER_OPTS
+          #   value: '--insecure-registry=169.62.82.19:32265'
         volumeMounts:
           - mountPath: /certs/client
             name: dind-certs
