@@ -38,6 +38,47 @@ spec:
     # value: $(event.pull_request.head.sha)
     value: latest
 ---
+
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: sample-ace-github-eventlistener-manual
+spec:
+  # serviceAccountName: pipeline
+  triggers:
+    - name: triggers-cp4i-1
+      # interceptors:
+      #   - cel:
+      #       filter: >-
+      #         (header.match('X-GitHub-Event', 'pull_request') &&
+      #          body.action == 'closed' &&
+      #          body.pull_request.merged == true &&
+      #          body.pull_request.head.repo.name  == 'devops-demo-sample-ace-project')
+      bindings:
+        - name: sample-ace-triggerbinding-manual
+      template:
+        name: sample-ace-trigger-template
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: sample-ace-triggerbinding-manual
+spec:
+  params:
+  - name: gitUrl
+    value: https://github.com/cs-tsui/devops-demo-sample-ace-project
+  - name: gitRevision
+    value: ''
+  - name: imageContext
+    value: dev-cst
+  - name: gitRepo
+    value: devops-demo-sample-ace-project
+  - name: serviceAccountName
+    value: my-pipeline-sa
+  - name: imageTag
+    # value: $(event.pull_request.head.sha)
+    value: latest
+---
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate
 metadata:
