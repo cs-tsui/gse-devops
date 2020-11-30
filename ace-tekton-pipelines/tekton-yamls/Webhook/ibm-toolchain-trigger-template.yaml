@@ -163,7 +163,7 @@ spec:
           - name: gitRevision
             value: $(params.gitRevision)
           - name: imageUrl
-            value: "us.icr.io/$(params.imageContext)/ExampleRestApi"
+            value: "us.icr.io/$(params.imageContext)/sampleaceproject"
             # value: 169.62.82.19:32265/my-docker-reg/sample-toolchain-ace
           - name: imageTag
             value: $(params.imageTag)
@@ -176,7 +176,7 @@ spec:
           - name: extraArgs
             value: --skip-tls-verify
           - name: project
-            value: ExampleRestApi
+            value: sampleaceproject
           # Defined in IBM Cloud Environment Properties
           - name: service_account_token
             value: $(params.service_account_token)
