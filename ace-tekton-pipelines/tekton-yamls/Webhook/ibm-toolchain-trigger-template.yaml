@@ -177,6 +177,12 @@ spec:
             value: --skip-tls-verify
           - name: project
             value: sampleaceproject
+          # Defined in IBM Cloud Environment Properties
+          - name: service_account_token
+            value: $(params.service_account_token)
+          - name: cluster_url
+            value: $(params.cluster_url)
+
         timeout: "1h0m0s"
         workspaces:
           - name: git-source

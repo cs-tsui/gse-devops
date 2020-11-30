@@ -15,6 +15,14 @@ spec:
     description: The path to the yaml file to deploy within the git source
     name: pathToYamlFile
     type: string
+  - name: service_account_token
+    description: token to login to the target cluster as SA
+    default: ''
+    type: string
+  - name: cluster_url
+    description: login URL of the target deployment Openshift Cluster
+    default: ''
+    type: string
   steps:
   - args:
     - -c
@@ -35,6 +43,9 @@ spec:
     - -c
     - |
       set -e
+
+      oc login --token=$(params.service_account_token) --server=$(params.cluster_url)
+
       oc apply -f $(workspaces.output.path)/$(params.pathToYamlFile)/integrationserver.yaml
     command:
     - /bin/bash

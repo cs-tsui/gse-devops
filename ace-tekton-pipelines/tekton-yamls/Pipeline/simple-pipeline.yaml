@@ -38,6 +38,16 @@ spec:
     default: "latest"
   - name: gitRepo
     description: Name of the git repository
+
+  - name: service_account_token
+    description: token to login to the target cluster as SA
+    default: ''
+    type: string
+  - name: cluster_url
+    description: login URL of the target deployment Openshift Cluster
+    default: ''
+    type: string
+
   tasks:
     - name: clone-repo
       taskRef:
@@ -113,5 +123,10 @@ spec:
         value: "$(params.imageUrl)"
       - name: pathToYamlFile
         value: "$(params.pathToYamlFile)"
+
+      - name: service_account_token
+        value: "$(params.service_account_token)"
+      - name: cluster_url
+        value: "$(params.cluster_url)"
       runAfter:
       - build-task
