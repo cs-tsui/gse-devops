@@ -50,7 +50,7 @@ spec:
     args:
       - |
         set -eu;
-        env
+        # env
         pwd
         ls -la        
         echo "workspace path"
@@ -62,6 +62,7 @@ spec:
         find / -name 'daemon.json'
         
         echo "Download BAR"
+        echo "BAR URL: $(ARTIFACTORY_URL)/artifactory/$(params.artifactoryRepo)/$(params.project)-$(params.imageTag).bar"
         curl -u $(ARTIFACTORY_USER):$(ARTIFACTORY_PASSWORD) -O "$(ARTIFACTORY_URL)/artifactory/$(params.artifactoryRepo)/$(params.project)-$(params.imageTag).bar"
     securityContext:
       privileged: true
