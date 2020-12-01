@@ -54,7 +54,8 @@ spec:
   - args:
     - -c
     - |
-      set -eu;
+      set -eux;
+      env;
       echo Project : $(params.project);
       echo "Running compile";
 
