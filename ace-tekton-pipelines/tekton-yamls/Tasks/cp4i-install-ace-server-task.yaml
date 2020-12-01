@@ -34,7 +34,7 @@ spec:
       echo $(workspaces.output.path)/$(params.pathToYamlFile)/
       echo $imageUrlLower:$(params.imageTag)
       ls -la $(workspaces.output.path)/$(params.pathToYamlFile)/
-      sed -i -e 's;__IMAGE__;$imageUrlLower:$(params.imageTag);g' $(workspaces.output.path)/$(params.pathToYamlFile)/integrationserver.yaml
+      sed -i -e "s;__IMAGE__;$imageUrlLower:$(params.imageTag);g" $(workspaces.output.path)/$(params.pathToYamlFile)/integrationserver.yaml
 
       cat $(workspaces.output.path)/$(params.pathToYamlFile)/integrationserver.yaml
     command:

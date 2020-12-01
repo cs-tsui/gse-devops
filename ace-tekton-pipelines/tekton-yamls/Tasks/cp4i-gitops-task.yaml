@@ -50,7 +50,7 @@ spec:
           echo $imageUrlLower:$(params.imageTag)
 
           # update value for key applicationImage
-          sed -i '/image:/c\        image: "$imageUrlLower:$(params.imageTag)"' ./integrationserver.yaml
+          sed -i "/image:/c\        image: '$imageUrlLower:$(params.imageTag)'" ./integrationserver.yaml
 
           # verify the value for key applicationImage got updated
           cat ./integrationserver.yaml | grep "image"
