@@ -1,0 +1,18 @@
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: sample-ace-triggerbinding-pr
+spec:
+  params:
+  - name: gitUrl
+    value: $(event.repository.clone_url)
+  - name: gitRevision
+    value: $(event.pull_request.head.sha)
+  - name: imageContext
+    value: dev-cst
+  - name: gitRepo
+    value: $(event.repository.name)
+  - name: serviceAccountName
+    value: my-pipeline-sa
+  - name: imageTag
+    value: $(event.pull_request.head.sha)
