@@ -39,17 +39,18 @@ spec:
         - -c
         - |
           set -e
-
+          # Lower case image URL for docker image requirement
+          imageUrlLower=`echo -n "$(params.imageUrl)" | tr '[:upper:]' '[:lower:]'`
           echo "Cloning the gitops repository"
 
           # clone repo
           git clone https://github.com/cs-tsui/devops-demo-cp4i-env.git
           cd devops-demo-cp4i-env
 
-          echo $(params.imageUrl):$(params.imageTag)
+          echo $imageUrlLower:$(params.imageTag)
 
           # update value for key applicationImage
-          sed -i '/image:/c\        image: "$(params.imageUrl):$(params.imageTag)"' ./integrationserver.yaml
+          sed -i '/image:/c\        image: "$imageUrlLower:$(params.imageTag)"' ./integrationserver.yaml
 
           # verify the value for key applicationImage got updated
           cat ./integrationserver.yaml | grep "image"

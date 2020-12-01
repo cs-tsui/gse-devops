@@ -87,7 +87,8 @@ spec:
     args:
       - |
         set -eu;
-
+        # Lower case image URL for docker image requirement
+        imageUrlLower=`echo -n "$(params.imageUrl)" | tr '[:upper:]' '[:lower:]'`
         env
         pwd
         ls -la
@@ -96,12 +97,12 @@ spec:
         pwd
         
         printf "Building image\n"
-        # buildah bud --build-arg PROJECT1=$(params.project) --tls-verify=$(params.TLSVERIFY) --layers -f $(params.DOCKERFILE) -t $(params.imageUrl):$(params.imageTag) $(params.CONTEXT)
+        # buildah bud --build-arg PROJECT1=$(params.project) --tls-verify=$(params.TLSVERIFY) --layers -f $(params.DOCKERFILE) -t $imageUrlLower:$(params.imageTag) $(params.CONTEXT)
 
         printf "Building image with docker\n"
-        docker build --tag "$(params.imageUrl):$(params.imageTag)" --file $(params.DOCKERFILE) $(params.CONTEXT)
-        docker inspect $(params.imageUrl):$(params.imageTag)
-        docker push $(params.imageUrl):$(params.imageTag)
+        docker build --tag "$imageUrlLower:$(params.imageTag)" --file $(params.DOCKERFILE) $(params.CONTEXT)
+        docker inspect $imageUrlLower:$(params.imageTag)
+        docker push $imageUrlLower:$(params.imageTag)
 
         echo "Done."
     volumeMounts:

@@ -28,11 +28,13 @@ spec:
     - -c
     - |
       set -e
+      # Lower case image URL for docker image requirement
+      imageUrlLower=`echo -n "$(params.imageUrl)" | tr '[:upper:]' '[:lower:]'`
       pwd
       echo $(workspaces.output.path)/$(params.pathToYamlFile)/
-      echo $(params.imageUrl):$(params.imageTag)
+      echo $imageUrlLower:$(params.imageTag)
       ls -la $(workspaces.output.path)/$(params.pathToYamlFile)/
-      sed -i -e 's;__IMAGE__;$(params.imageUrl):$(params.imageTag);g' $(workspaces.output.path)/$(params.pathToYamlFile)/integrationserver.yaml
+      sed -i -e 's;__IMAGE__;$imageUrlLower:$(params.imageTag);g' $(workspaces.output.path)/$(params.pathToYamlFile)/integrationserver.yaml
 
       cat $(workspaces.output.path)/$(params.pathToYamlFile)/integrationserver.yaml
     command:
