@@ -130,3 +130,14 @@ spec:
         value: "$(params.cluster_url)"
       runAfter:
       - build-task
+    - name: smoke-test-task
+      taskRef:
+        name: smoke-tests
+      workspaces:
+        - name: output
+          workspace: git-source
+      params:
+      - name: project
+        value: $(params.project)
+      runAfter:
+      - deploy-task
