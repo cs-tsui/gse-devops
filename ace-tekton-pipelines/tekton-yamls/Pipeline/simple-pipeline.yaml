@@ -123,7 +123,6 @@ spec:
         value: "$(params.imageUrl)"
       - name: pathToYamlFile
         value: "$(params.pathToYamlFile)"
-
       - name: service_account_token
         value: "$(params.service_account_token)"
       - name: cluster_url
@@ -139,5 +138,9 @@ spec:
       params:
       - name: project
         value: $(params.project)
+      - name: service_account_token
+        value: "$(params.service_account_token)"
+      - name: cluster_url
+        value: "$(params.cluster_url)"
       runAfter:
       - deploy-task

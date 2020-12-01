@@ -19,11 +19,22 @@ spec:
   - default: sample-ace-project-http
     name: project-route
     type: string
+  - name: service_account_token
+    description: token to login to the target cluster as SA
+    default: ''
+    type: string
+  - name: cluster_url
+    description: login URL of the target deployment Openshift Cluster
+    default: ''
+    type: string
   steps:
   - args:
     - -c
     - |
       set -e
+      oc whoami
+      oc login --token=$(params.service_account_token) --server=$(params.cluster_url)
+      oc whoami
       deployment_name=$(oc get deployments | grep $(params.project-deployment) | cut -f1 -d ' ')
       pass="successfully rolled out"
       count=0
@@ -56,7 +67,10 @@ spec:
     - -c
     - |
       set -e
-      echo "Testing endpoint is returning a 200..."
+      oc whoami
+      oc login --token=$(params.service_account_token) --server=$(params.cluster_url)
+      oc whoami
+      echo "Testing endpoint is returning proper payload"
       base_url=$(oc get routes | grep -w $(params.project-route)  | awk '{print $2}')
       
       # for "sampleaceapi"

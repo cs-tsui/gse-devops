@@ -45,9 +45,7 @@ spec:
     - -c
     - |
       set -e
-
       oc login --token=$(params.service_account_token) --server=$(params.cluster_url)
-
       oc apply -f $(workspaces.output.path)/$(params.pathToYamlFile)/integrationserver.yaml
     command:
     - /bin/bash
