@@ -32,7 +32,6 @@ spec:
     - -c
     - |
       set -e
-      oc whoami
       oc login --token=$(params.service_account_token) --server=$(params.cluster_url)
       oc whoami
       deployment_name=$(oc get deployments | grep $(params.project-deployment) | cut -f1 -d ' ')
@@ -67,7 +66,6 @@ spec:
     - -c
     - |
       set -e
-      oc whoami
       oc login --token=$(params.service_account_token) --server=$(params.cluster_url)
       oc whoami
       echo "Testing endpoint is returning proper payload"
