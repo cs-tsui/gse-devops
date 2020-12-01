@@ -1,0 +1,41 @@
+# Commit triggered - configured in the IBM Cloud Devops UI under Triggers
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: sample-ace-github-eventlistener
+spec:
+  # serviceAccountName: pipeline
+  triggers:
+    - name: triggers-cp4i
+      bindings:
+        - name: sample-ace-triggerbinding
+      template:
+        name: sample-ace-trigger-template
+---
+# PR triggered
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: sample-ace-github-eventlistener
+spec:
+  # serviceAccountName: pipeline
+  triggers:
+    - name: triggers-cp4i
+      bindings:
+        - name: sample-ace-triggerbinding-pr
+      template:
+        name: sample-ace-trigger-template
+---
+# Manually Trigger
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: EventListener
+metadata:
+  name: sample-ace-github-eventlistener-manual
+spec:
+  # serviceAccountName: pipeline
+  triggers:
+    - name: triggers-cp4i-1
+      bindings:
+        - name: sample-ace-triggerbinding-manual
+      template:
+        name: sample-ace-trigger-template

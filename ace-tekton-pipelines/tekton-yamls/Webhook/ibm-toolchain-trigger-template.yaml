@@ -1,63 +1,3 @@
-apiVersion: triggers.tekton.dev/v1alpha1
-kind: EventListener
-metadata:
-  name: sample-ace-github-eventlistener
-spec:
-  # serviceAccountName: pipeline
-  triggers:
-    - name: triggers-cp4i
-      # interceptors:
-      #   - cel:
-      #       filter: >-
-      #         (header.match('X-GitHub-Event', 'pull_request') &&
-      #          body.action == 'closed' &&
-      #          body.pull_request.merged == true &&
-      #          body.pull_request.head.repo.name  == 'devops-demo-sample-ace-project')
-      bindings:
-        - name: sample-ace-triggerbinding
-      template:
-        name: sample-ace-trigger-template
----
-apiVersion: triggers.tekton.dev/v1alpha1
-kind: TriggerBinding
-metadata:
-  name: sample-ace-triggerbinding
-spec:
-  params:
-  - name: gitUrl
-    value: $(event.repository.clone_url)
-  - name: gitRevision
-    value: $(event.pull_request.head.sha)
-  - name: imageContext
-    value: dev-cst
-  - name: gitRepo
-    value: $(event.repository.name)
-  - name: serviceAccountName
-    value: my-pipeline-sa
-  - name: imageTag
-    # value: $(event.pull_request.head.sha)
-    value: latest
----
-
-apiVersion: triggers.tekton.dev/v1alpha1
-kind: EventListener
-metadata:
-  name: sample-ace-github-eventlistener-manual
-spec:
-  # serviceAccountName: pipeline
-  triggers:
-    - name: triggers-cp4i-1
-      # interceptors:
-      #   - cel:
-      #       filter: >-
-      #         (header.match('X-GitHub-Event', 'pull_request') &&
-      #          body.action == 'closed' &&
-      #          body.pull_request.merged == true &&
-      #          body.pull_request.head.repo.name  == 'devops-demo-sample-ace-project')
-      bindings:
-        - name: sample-ace-triggerbinding-manual
-      template:
-        name: sample-ace-trigger-template
 ---
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerBinding
@@ -78,6 +18,8 @@ spec:
   - name: imageTag
     # value: $(event.pull_request.head.sha)
     value: latest
+  # - name: project
+  #   value: sampleaceproject
 ---
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: TriggerTemplate
@@ -163,7 +105,7 @@ spec:
           - name: gitRevision
             value: $(params.gitRevision)
           - name: imageUrl
-            value: "us.icr.io/$(params.imageContext)/sampleaceproject"
+            value: "us.icr.io/$(params.imageContext)/$(params.project)"
             # value: 169.62.82.19:32265/my-docker-reg/sample-toolchain-ace
           - name: imageTag
             value: $(params.imageTag)
@@ -176,7 +118,7 @@ spec:
           - name: extraArgs
             value: --skip-tls-verify
           - name: project
-            value: sampleaceproject
+            value: $(params.project)
           # Defined in IBM Cloud Environment Properties
           - name: service_account_token
             value: $(params.service_account_token)
