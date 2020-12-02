@@ -37,3 +37,25 @@ spec:
     value: my-pipeline-sa
   - name: imageTag
     value: $(event.pull_request.head.sha)
+---
+apiVersion: triggers.tekton.dev/v1alpha1
+kind: TriggerBinding
+metadata:
+  name: sample-ace-triggerbinding-manual
+spec:
+  params:
+  - name: gitUrl
+    value: https://github.com/cs-tsui/devops-demo-sample-ace-project
+  - name: gitRevision
+    value: ''
+  - name: imageContext
+    value: dev-cst
+  - name: gitRepo
+    value: devops-demo-sample-ace-project
+  - name: serviceAccountName
+    value: my-pipeline-sa
+  - name: imageTag
+    # value: $(event.pull_request.head.sha)
+    value: latest
+  # - name: project
+  #   value: sampleaceproject
