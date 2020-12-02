@@ -78,7 +78,8 @@ spec:
       echo $total_url
 
       ECHO_PAYLOAD='{"hello":"world"}'
-      if [[ "$(curl --request POST --url $total_url --header 'accept: application/json' --header 'content-type: application/json' --data $ECHO_PAYLOAD)" != "$ECHO_PAYLOAD" ]]
+      CURL_RESPONSE="$(curl --request POST --url $total_url --header 'accept: application/json' --header 'content-type: application/json' --data $ECHO_PAYLOAD)"
+      if [[ $CURL_RESPONSE != "$ECHO_PAYLOAD" ]]
       then
         printf "Server is not serving json properly"
         exit 1
