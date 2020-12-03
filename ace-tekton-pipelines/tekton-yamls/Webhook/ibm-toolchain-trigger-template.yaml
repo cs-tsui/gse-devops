@@ -27,6 +27,17 @@ spec:
     - kind: Secret
       apiVersion: v1
       metadata:
+        name: github-access-token
+        annotations:
+          tekton.dev/git-0: 'https://github.com'
+      stringData:
+        password: $(params.github_token)
+        username: github-username
+      type: kubernetes.io/basic-auth
+
+    - kind: Secret
+      apiVersion: v1
+      metadata:
         name: artifactory-credentials
       data:
         ARTIFACTORY_PASSWORD: $(params.artifactory_password)
