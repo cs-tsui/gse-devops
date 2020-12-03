@@ -16,7 +16,7 @@ spec:
 apiVersion: triggers.tekton.dev/v1alpha1
 kind: EventListener
 metadata:
-  name: sample-ace-github-eventlistener
+  name: sample-ace-github-eventlistener-pr
 spec:
   # serviceAccountName: pipeline
   triggers:
