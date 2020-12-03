@@ -16,7 +16,7 @@ spec:
   - name: serviceAccountName
     value: my-pipeline-sa
   - name: imageTag
-    value: latest
+    value: $(event.head_commit.id)
 ---
 # Trigger binding for PRs
 apiVersion: triggers.tekton.dev/v1alpha1
