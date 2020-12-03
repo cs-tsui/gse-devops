@@ -10,7 +10,7 @@ spec:
   - name: gitRevision
     value: $(event.head_commit.id)
   - name: imageContext
-    value: custom-ace-image
+    value: custom-ace-images
   - name: gitRepo
     value: $(event.repository.name)
   - name: serviceAccountName
@@ -30,7 +30,7 @@ spec:
   - name: gitRevision
     value: $(event.pull_request.head.sha)
   - name: imageContext
-    value: custom-ace-image
+    value: custom-ace-images
   - name: gitRepo
     value: $(event.repository.name)
   - name: serviceAccountName
@@ -49,7 +49,7 @@ spec:
   - name: gitRevision
     value: ''
   - name: imageContext
-    value: custom-ace-image
+    value: custom-ace-images
   - name: gitRepo
     value: devops-demo-sample-ace-project
   - name: serviceAccountName
