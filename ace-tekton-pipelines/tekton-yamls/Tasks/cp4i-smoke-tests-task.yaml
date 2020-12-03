@@ -77,8 +77,9 @@ spec:
       total_url=$base_url/examplerestapi/v1/echo
       echo $total_url
 
-      ECHO_PAYLOAD='{"hello":"world"}'
+      ECHO_PAYLOAD='{"message":"world"}'
       CURL_RESPONSE="$(curl --request POST --url $total_url --header 'accept: application/json' --header 'content-type: application/json' --data $ECHO_PAYLOAD)"
+      echo $CURL_RESPONSE
       if [[ $CURL_RESPONSE != "$ECHO_PAYLOAD" ]]
       then
         printf "Server is not serving json properly"
@@ -93,4 +94,4 @@ spec:
     - name: project
       value: $(params.project)
     image: $(params.tools-image)
-    name: check-returning-200
+    name: check-returning-input
