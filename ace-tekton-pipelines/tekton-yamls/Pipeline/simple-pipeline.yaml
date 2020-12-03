@@ -144,22 +144,22 @@ spec:
         value: "$(params.cluster_url)"
       runAfter:
       - deploy-task
-    - name: gitops
-      taskRef:
-        name: gitops
-      workspaces:
-        - name: output
-          workspace: git-source
-      runAfter:
-        - deploy-task
-      params:
-        - name: imageUrl
-          value: $(params.imageUrl)
-        - name: imageTag
-          value: $(params.imageTag)
-        - name: gitRepo
-          value: $(params.gitRepo)
-        - name: pathToYamlFile
-          value: "$(params.pathToYamlFile)"
+    # - name: gitops
+    #   taskRef:
+    #     name: gitops
+    #   workspaces:
+    #     - name: output
+    #       workspace: git-source
+    #   runAfter:
+    #     - deploy-task
+    #   params:
+    #     - name: imageUrl
+    #       value: $(params.imageUrl)
+    #     - name: imageTag
+    #       value: $(params.imageTag)
+    #     - name: gitRepo
+    #       value: $(params.gitRepo)
+    #     - name: pathToYamlFile
+    #       value: "$(params.pathToYamlFile)"
 
 
