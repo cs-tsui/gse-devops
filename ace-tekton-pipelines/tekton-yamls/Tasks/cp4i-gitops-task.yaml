@@ -18,6 +18,10 @@ spec:
       type: string
     - name: js-image
       default: node:12-stretch
+    - default: k8s
+      description: The path to the yaml file to deploy within the git source
+      name: pathToYamlFile
+      type: string
   steps:
     - name: update-gitops-repo
       image: $(params.js-image)
@@ -49,8 +53,13 @@ spec:
 
           echo $imageUrlLower:$(params.imageTag)
 
+          # Cat out the integrationserver.yaml we previously generated
+          echo "The new YAML"
+          cat $(workspaces.output.path)/$(params.pathToYamlFile)/integrationserver.yaml
+
           # update value for key applicationImage
-          sed -i "/image:/c\        image: '$imageUrlLower:$(params.imageTag)'" ./integrationserver.yaml
+          # sed -i "/image:/c\        image: '$imageUrlLower:$(params.imageTag)'" ./integrationserver.yaml
+          cp $(workspaces.output.path)/$(params.pathToYamlFile)/integrationserver.yaml ./integrationserver.yaml
 
           # verify the value for key applicationImage got updated
           cat ./integrationserver.yaml | grep "image"
